@@ -1,0 +1,130 @@
+{
+  "properties": [
+    {
+      "name": "authzcraft.pep.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用 AuthzCraft PEP Starter。true 表示注册 MyBatis 数据权限拦截器；false 表示业务查询不接入数据权限。"
+    },
+    {
+      "name": "authzcraft.pep.center-base-url",
+      "type": "java.lang.String",
+      "description": "AuthzCraft 中心服务基础地址。PEP 会基于该地址调用 PDP 数据权限计划接口 /authzcraft/api/v1/data-authz/plans。"
+    },
+    {
+      "name": "authzcraft.pep.tenant-key",
+      "type": "java.lang.String",
+      "description": "租户标识。PEP 请求 PDP 时携带，用于在中心侧匹配对应租户下的资源、策略、授权和主体上下文。"
+    },
+    {
+      "name": "authzcraft.pep.app-key",
+      "type": "java.lang.String",
+      "description": "接入应用标识。必须与中心侧资源目录、策略、授权和决策记录中的 app_key 保持一致。"
+    },
+    {
+      "name": "authzcraft.pep.requester-source",
+      "type": "java.lang.String",
+      "description": "请求主体来源。STATIC 表示使用配置中的固定 requester；HEADER 表示从 HTTP 请求 Header 动态读取当前访问人。"
+    },
+    {
+      "name": "authzcraft.pep.requester-kind",
+      "type": "com.fcm.authzcraft.api.common.RequesterKind",
+      "description": "请求主体类型。常用值为 USER；当 Header 中未传 requester-kind 时，PEP 使用该默认值。"
+    },
+    {
+      "name": "authzcraft.pep.requester-key",
+      "type": "java.lang.String",
+      "description": "固定请求主体标识。仅 requester-source=STATIC 时使用，通常用于本地验证或无登录态的技术联调。"
+    },
+    {
+      "name": "authzcraft.pep.requester-kind-header",
+      "type": "java.lang.String",
+      "description": "动态请求主体类型 Header 名称。仅 requester-source=HEADER 时使用，默认 X-AuthzCraft-Requester-Kind。"
+    },
+    {
+      "name": "authzcraft.pep.requester-key-header",
+      "type": "java.lang.String",
+      "description": "动态请求主体标识 Header 名称。仅 requester-source=HEADER 时使用，缺失时 PEP 会拒绝请求。"
+    },
+    {
+      "name": "authzcraft.pep.environment",
+      "type": "java.lang.String",
+      "description": "权限计划请求的环境标识。用于区分 TEST、PROD 等运行环境，中心侧可据此做策略环境隔离。"
+    },
+    {
+      "name": "authzcraft.pep.failure-mode",
+      "type": "java.lang.String",
+      "description": "PEP 异常处理模式。FAIL_CLOSE 表示权限计划或 SQL 改写异常时拒绝访问；FAIL_OPEN 表示异常时放行原 SQL，并输出 WARN 日志。生产环境建议使用 FAIL_CLOSE。"
+    },
+    {
+      "name": "authzcraft.pep.observability.response-headers-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否把 PEP 决策元信息写入 HTTP 响应 Header。打开后会输出 decisionKey、planDecision、resourceKey 等调试信息；生产环境建议关闭。"
+    },
+    {
+      "name": "authzcraft.pep.observability.execution-log-enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否输出 PEP 执行日志。日志只记录决策元信息和参数数量，不输出敏感参数明文或完整改写 SQL。"
+    },
+    {
+      "name": "authzcraft.pep.mappings",
+      "type": "java.util.Map<java.lang.String, com.fcm.authzcraft.pep.autoconfigure.AuthzCraftPepProperties$ResourceMapping>",
+      "description": "Mapper 方法到 AuthzCraft 资源的映射。Map key 通常是 MyBatis mappedStatementId，即 Mapper 全限定类名加方法名。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].resource-key",
+      "type": "java.lang.String",
+      "description": "当前 Mapper 查询对应的中心侧资源标识。必须与 authzcraft_relation_resource.resource_key 一致。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].operation-code",
+      "type": "java.lang.String",
+      "description": "当前 Mapper 查询对应的权限操作码。查询类接口通常配置 READ。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].field-mappings",
+      "type": "java.util.Map<java.lang.String, java.lang.String>",
+      "description": "中心侧策略字段到业务 SQL 字段的映射。Map key 是中心侧资源字段编码，value 是业务表字段或 SQL 列表达式。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].access-paths",
+      "type": "java.util.Map<java.lang.String, com.fcm.authzcraft.pep.autoconfigure.AuthzCraftPepProperties$AccessPathMapping>",
+      "description": "访问路径配置。用于把中心侧 requiredAccessPathKeys 展开成业务 SQL EXISTS 子查询。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].access-paths[].target-table",
+      "type": "java.lang.String",
+      "description": "访问路径目标表名，即 EXISTS 子查询访问的业务表。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].access-paths[].source-field",
+      "type": "java.lang.String",
+      "description": "访问路径源字段，通常是外层主表字段，建议写成表名或别名限定形式，例如 wb_meeting.meeting_id。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].access-paths[].target-field",
+      "type": "java.lang.String",
+      "description": "访问路径目标字段，即 EXISTS 子查询目标表中用于关联 source-field 的字段。"
+    },
+    {
+      "name": "authzcraft.pep.mappings[].access-paths[].target-field-mappings",
+      "type": "java.util.Map<java.lang.String, java.lang.String>",
+      "description": "访问路径目标表字段映射。Map key 是中心侧路径目标资源字段编码，value 是目标表字段名。"
+    }
+  ],
+  "hints": [
+    {
+      "name": "authzcraft.pep.requester-source",
+      "values": [
+        { "value": "STATIC", "description": "使用配置中的固定 requester。" },
+        { "value": "HEADER", "description": "从 HTTP Header 读取当前 requester。" }
+      ]
+    },
+    {
+      "name": "authzcraft.pep.failure-mode",
+      "values": [
+        { "value": "FAIL_CLOSE", "description": "权限计划或 SQL 改写异常时拒绝访问，生产默认推荐。" },
+        { "value": "FAIL_OPEN", "description": "权限计划或 SQL 改写异常时放行原 SQL，仅建议灰度、联调或应急使用。" }
+      ]
+    }
+  ]
+}
